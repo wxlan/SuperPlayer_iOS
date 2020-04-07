@@ -26,7 +26,7 @@
 /** 返回按钮*/
 @property (nonatomic, strong) UIButton                *backBtn;
 /// 是否禁用返回
-@property  (nonatomic) BOOL                           disableBackBtn;
+@property BOOL                                        disableBackBtn;
 /** bottomView*/
 @property (nonatomic, strong) UIImageView             *bottomImageView;
 /** topView */
@@ -34,15 +34,15 @@
 /** 弹幕按钮 */
 @property (nonatomic, strong) UIButton                *danmakuBtn;
 /// 是否禁用弹幕
-@property (nonatomic) BOOL                            disableDanmakuBtn;
+@property BOOL                                        disableDanmakuBtn;
 /** 截图按钮 */
 @property (nonatomic, strong) UIButton                *captureBtn;
 /// 是否禁用截图
-@property (nonatomic) BOOL                            disableCaptureBtn;
+@property BOOL                                        disableCaptureBtn;
 /** 更多按钮 */
 @property (nonatomic, strong) UIButton                *moreBtn;
 /// 是否禁用更多
-@property (nonatomic) BOOL                            disableMoreBtn;
+@property BOOL                                        disableMoreBtn;
 /** 切换分辨率按钮 */
 @property (nonatomic, strong) UIButton                *resolutionBtn;
 /** 分辨率的View */
@@ -58,7 +58,7 @@
 /** 分辨率的名称 */
 @property (nonatomic, strong) NSArray<NSString *>    *resolutionArray;
 /** 更多设置View */
-@property (nonatomic, strong) SuperPlayerSettingsView        *moreContentView;
+@property (nonatomic, strong) MoreContentView        *moreContentView;
 /** 返回直播 */
 @property (nonatomic, strong) UIButton               *backLiveBtn;
 
@@ -71,9 +71,13 @@
 /** 重播按钮 */
 @property (nonatomic, strong) UIButton       *repeatBtn;
 
+@property (nonatomic, assign) BOOL   hiddenDefault; // 隐藏默认UI
+
+
 /** 是否全屏播放 */
 @property (nonatomic, assign,getter=isFullScreen)BOOL fullScreen;
 @property (nonatomic, assign,getter=isLockScreen)BOOL isLockScreen;
 @property (nonatomic, strong) UIButton               *pointJumpBtn;
 
+@property BOOL isLive;
 @end

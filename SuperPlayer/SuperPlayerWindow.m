@@ -12,7 +12,6 @@
 #import "UIView+MMLayout.h"
 #import "DataReport.h"
 #import "UIView+Fade.h"
-#import "TXLiteAVSDK.h"
 
 #define FLOAT_VIEW_WIDTH  200
 #define FLOAT_VIEW_HEIGHT 112

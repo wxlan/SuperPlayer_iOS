@@ -2,11 +2,10 @@
 #import "SuperPlayer.h"
 #import "SuperPlayerModel.h"
 #import "SuperPlayerViewConfig.h"
-#import "SPVideoFrameDescription.h"
 
 @class SuperPlayerControlView;
 @class SuperPlayerView;
-@class TXImageSprite;
+
 @protocol SuperPlayerDelegate <NSObject>
 @optional
 /// 返回事件
@@ -74,8 +73,6 @@ typedef NS_ENUM(NSInteger, SuperPlayerLayoutStyle) {
 @property BOOL autoPlay;
 /// 视频总时长
 @property (nonatomic) CGFloat playDuration;
-/// 原始视频总时长，主要用于试看场景下显示总时长
-@property (nonatomic) NSTimeInterval originalDuration;
 /// 视频当前播放时间
 @property (nonatomic) CGFloat playCurrentTime;
 /// 起始播放时间，用于从上次位置开播
@@ -93,7 +90,13 @@ typedef NS_ENUM(NSInteger, SuperPlayerLayoutStyle) {
 /**
  * 打点信息
  */
-@property NSArray<SPVideoFrameDescription *> *keyFrameDescList;
+@property NSArray *keyFrameDescList;
+
+@property (readonly)  BOOL disableDefaultOrientation; // 是否禁止默认旋转
+@property BOOL hiddenLoding; // 隐藏加载图
+
+@property (nonatomic, strong) UIImageView *loadingView;
+
 /**
  * 播放model
  */
@@ -114,6 +117,11 @@ typedef NS_ENUM(NSInteger, SuperPlayerLayoutStyle) {
  * @warn isLoaded == NO 时暂停无效
  */
 - (void)pause;
+
+- (void)changeDefaultOrientation:(BOOL)isDefault;
+
+- (void)removeNotifications;
+- (void)startNotifications;
 
 /**
  *  从xx秒开始播放视频跳转

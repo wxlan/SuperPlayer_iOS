@@ -1,5 +1,5 @@
 //
-//  SuperPlayerSettingsView.h
+//  SuperPlayerMoreView.h
 //  TXLiteAVDemo
 //
 //  Created by annidyfeng on 2018/7/4.
@@ -13,7 +13,7 @@
 
 @class SuperPlayerControlView;
 
-@interface SuperPlayerSettingsView : UIView
+@interface MoreContentView : UIView
 
 @property (weak) SuperPlayerControlView *controlView;
 
@@ -21,12 +21,7 @@
 
 @property UISlider *lightSlider;
 
-/**
- * 是否显示播放速度和镜像
- *
- * 目前仅点播放支持修改播放速度与设置画面镜像
- */
-@property (nonatomic) BOOL enableSpeedAndMirrorControl;
+@property (nonatomic) BOOL isLive;
 
 @property SuperPlayerViewConfig *playerConfig;
 - (void)update;

@@ -1,5 +1,9 @@
 #import "SuperPlayerControlView.h"
 
+@implementation SuperPlayerVideoPoint
+
+@end
+
 @implementation SuperPlayerControlView
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -33,13 +37,12 @@
     
 }
 
-- (void)resetWithResolutionNames:(NSArray<NSString *> *)resolutionNames
-          currentResolutionIndex:(NSUInteger)resolutionIndex
-                          isLive:(BOOL)isLive
-                  isTimeShifting:(BOOL)isTimeShifting
-                      isPlaying:(BOOL)isAutoPlay
+- (void)playerBegin:(SuperPlayerModel *)model
+        isLive:(BOOL)isLive
+isTimeShifting:(BOOL)isTimeShifting
+    isAutoPlay:(BOOL)isAutoPlay
 {
-    
+
 }
 
 - (void)setPlayState:(BOOL)isPlay {

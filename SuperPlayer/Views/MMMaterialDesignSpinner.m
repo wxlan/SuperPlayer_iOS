@@ -12,6 +12,7 @@ static NSString *kMMRingStrokeAnimationKey = @"mmmaterialdesignspinner.stroke";
 static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotation";
 
 @interface MMMaterialDesignSpinner ()
+
 @property (nonatomic, readonly) CAShapeLayer *progressLayer;
 @property (nonatomic, readwrite) BOOL isAnimating;
 @end
@@ -94,22 +95,22 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     animation.repeatCount = INFINITY;
     animation.removedOnCompletion = NO;
     [self.progressLayer addAnimation:animation forKey:kMMRingRotationAnimationKey];
-    
+
     CABasicAnimation *headAnimation = [CABasicAnimation animation];
     headAnimation.keyPath = @"strokeStart";
     headAnimation.duration = self.duration / 1.5f;
     headAnimation.fromValue = @(0.f);
     headAnimation.toValue = @(0.25f);
     headAnimation.timingFunction = self.timingFunction;
-    
+
     CABasicAnimation *tailAnimation = [CABasicAnimation animation];
     tailAnimation.keyPath = @"strokeEnd";
     tailAnimation.duration = self.duration / 1.5f;
     tailAnimation.fromValue = @(0.f);
     tailAnimation.toValue = @(1.f);
     tailAnimation.timingFunction = self.timingFunction;
-    
-    
+
+
     CABasicAnimation *endHeadAnimation = [CABasicAnimation animation];
     endHeadAnimation.keyPath = @"strokeStart";
     endHeadAnimation.beginTime = self.duration / 1.5f;
@@ -117,7 +118,7 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     endHeadAnimation.fromValue = @(0.25f);
     endHeadAnimation.toValue = @(1.f);
     endHeadAnimation.timingFunction = self.timingFunction;
-    
+
     CABasicAnimation *endTailAnimation = [CABasicAnimation animation];
     endTailAnimation.keyPath = @"strokeEnd";
     endTailAnimation.beginTime = self.duration / 1.5f;
@@ -125,7 +126,7 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     endTailAnimation.fromValue = @(1.f);
     endTailAnimation.toValue = @(1.f);
     endTailAnimation.timingFunction = self.timingFunction;
-    
+
     CAAnimationGroup *animations = [CAAnimationGroup animation];
     [animations setDuration:self.duration];
     [animations setAnimations:@[headAnimation, tailAnimation, endHeadAnimation, endTailAnimation]];
@@ -133,7 +134,7 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     animations.removedOnCompletion = NO;
     [self.progressLayer addAnimation:animations forKey:kMMRingStrokeAnimationKey];
     
-    
+//    [self.loadingView startAnimating];
     self.isAnimating = true;
     
     if (self.hidesWhenStopped) {
@@ -144,7 +145,8 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
 - (void)stopAnimating {
     if (!self.isAnimating)
         return;
-    
+//    [self.loadingView stopAnimating];
+
     [self.progressLayer removeAnimationForKey:kMMRingRotationAnimationKey];
     [self.progressLayer removeAnimationForKey:kMMRingStrokeAnimationKey];
     self.isAnimating = false;
@@ -197,5 +199,7 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     _hidesWhenStopped = hidesWhenStopped;
     self.hidden = !self.isAnimating && hidesWhenStopped;
 }
+
+
 
 @end

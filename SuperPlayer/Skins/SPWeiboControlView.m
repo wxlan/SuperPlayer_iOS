@@ -14,7 +14,6 @@
 #import "SuperPlayer.h"
 
 @interface SPWeiboControlView() <PlayerSliderDelegate>
-@property BOOL isLive;
 @end
 
 @implementation SPWeiboControlView
@@ -199,9 +198,9 @@
     return _resolutionView;
 }
 
-- (SuperPlayerSettingsView *)moreContentView {
+- (MoreContentView *)moreContentView {
     if (!_moreContentView) {
-        _moreContentView = [[SuperPlayerSettingsView alloc] initWithFrame:CGRectZero];
+        _moreContentView = [[MoreContentView alloc] initWithFrame:CGRectZero];
         _moreContentView.controlView = self;
         [self addSubview:_moreContentView];
         [_moreContentView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -237,9 +236,6 @@
 }
 
 - (void)progressSliderValueChanged:(UISlider *)sender {
-    if (self.maxPlayableRatio > 0 && sender.value * self.maxPlayableRatio) {
-        sender.value = self.maxPlayableRatio;
-    }
     [self.delegate controlViewPreview:self where:sender.value];
 }
 
@@ -323,7 +319,7 @@
     }
     
     self.moreContentView.playerConfig = self.playerConfig;
-    self.moreContentView.enableSpeedAndMirrorControl = !self.isLive;
+    self.moreContentView.isLive = self.isLive;
     [self.moreContentView update];
     self.moreContentView.hidden = NO;
     
@@ -331,21 +327,18 @@
     self.isShowSecondView = YES;
 }
 
-- (void)resetWithResolutionNames:(NSArray<NSString *> *)resolutionNames
-          currentResolutionIndex:(NSUInteger)currentResolutionIndex
-                          isLive:(BOOL)isLive
-                  isTimeShifting:(BOOL)isTimeShifting
-                       isPlaying:(BOOL)isPlaying
+- (void)playerBegin:(SuperPlayerModel *)model
+             isLive:(BOOL)isLive
+     isTimeShifting:(BOOL)isTimeShifting
+         isAutoPlay:(BOOL)isAutoPlay
 {
-    [self setPlayState:isPlaying];
+    [self setPlayState:isAutoPlay];
 
-    _resolutionArray = resolutionNames;
-    NSAssert(resolutionNames == nil || currentResolutionIndex < resolutionNames.count,
-             @"Invalid argument when reseeting %@", NSStringFromClass(self.class));
-    if (resolutionNames.count > 0) {
-        [self.resolutionBtn setTitle:resolutionNames[currentResolutionIndex]
-                            forState:UIControlStateNormal];
+//    _resolutionArray = model.playDefinitions;
+    if (model.playingDefinition != nil) {
+        [_resolutionBtn setTitle:model.playingDefinition forState:UIControlStateNormal];
     }
+    
     for (UIView *subview in self.resolutionView.subviews)
         [subview removeFromSuperview];
     
@@ -375,7 +368,7 @@
             make.centerY.equalTo(self.resolutionView.mas_centerY).offset((i-self.resolutionArray.count/2.0+0.5)*45);
         }];
         
-        if (i == currentResolutionIndex) {
+        if ([_resolutionArray[i] isEqualToString:model.playingDefinition]) {
             btn.selected = YES;
             btn.backgroundColor = RGBA(34, 30, 24, 1);
             self.resoultionCurrentBtn = btn;
@@ -441,7 +434,7 @@
     }
     [self.videoSlider.pointArray removeAllObjects];
     
-    for (SPVideoFrameDescription *p in pointArray) {
+    for (SuperPlayerVideoPoint *p in pointArray) {
         PlayerPoint *point = [self.videoSlider addPoint:p.where];
         point.content = p.text;
         point.timeOffset = p.time;

@@ -35,6 +35,7 @@
 /** 分辨率的View */
 @property (nonatomic, strong) UIView                  *resolutionView;
 /** 更多设置View */
-@property (nonatomic, strong) SuperPlayerSettingsView         *moreContentView;
+@property (nonatomic, strong) MoreContentView         *moreContentView;
+@property BOOL isLive;
 @property (nonatomic, strong) UIButton               *pointJumpBtn;
 @end

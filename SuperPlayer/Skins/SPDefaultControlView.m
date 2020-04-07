@@ -2,7 +2,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 
-#import "SuperPlayerSettingsView.h"
+#import "MoreContentView.h"
 #import "DataReport.h"
 #import "SuperPlayerFastView.h"
 #import "PlayerSlider.h"
@@ -19,7 +19,8 @@
 #define BOTTOM_IMAGE_VIEW_HEIGHT 50
 
 @interface SPDefaultControlView () <UIGestureRecognizerDelegate, PlayerSliderDelegate>
-@property BOOL isLive;
+
+
 @end
 
 @implementation SPDefaultControlView
@@ -27,6 +28,8 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        
+        
         [self addSubview:self.topImageView];
         [self addSubview:self.bottomImageView];
         [self.bottomImageView addSubview:self.startBtn];
@@ -293,9 +296,6 @@
 }
 
 - (void)progressSliderValueChanged:(UISlider *)sender {
-    if (self.maxPlayableRatio > 0 && sender.value > self.maxPlayableRatio) {
-        sender.value = self.maxPlayableRatio;
-    }
     [self.delegate controlViewPreview:self where:sender.value];
 }
 
@@ -316,31 +316,6 @@
     [self fadeOut:0.1];
 }
 
-- (void)setDisableBackBtn:(BOOL)disableBackBtn {
-    _disableBackBtn = disableBackBtn;
-    self.backBtn.hidden = disableBackBtn;
-}
-
-- (void)setDisableMoreBtn:(BOOL)disableMoreBtn {
-    _disableMoreBtn = disableMoreBtn;
-    if (self.fullScreen) {
-        self.moreBtn.hidden = disableMoreBtn;
-    }
-}
-
-- (void)setDisableCaptureBtn:(BOOL)disableCaptureBtn {
-    _disableCaptureBtn = disableCaptureBtn;
-    if (self.fullScreen) {
-        self.captureBtn.hidden = disableCaptureBtn;
-    }
-}
-
-- (void)setDisableDanmakuBtn:(BOOL)disableDanmakuBtn {
-    _disableDanmakuBtn = disableDanmakuBtn;
-    if (self.fullScreen) {
-        self.danmakuBtn.hidden = disableDanmakuBtn;
-    }
-}
 /**
  *  屏幕方向发生变化会调用这里
  */
@@ -349,12 +324,24 @@
     self.lockBtn.hidden         = NO;
     self.fullScreenBtn.selected = self.isLockScreen;
     self.fullScreenBtn.hidden   = YES;
-    self.resolutionBtn.hidden   = self.resolutionArray.count == 0;
-    self.moreBtn.hidden         = self.disableMoreBtn;
-    self.captureBtn.hidden      = self.disableCaptureBtn;
-    self.danmakuBtn.hidden      = self.disableDanmakuBtn;
+    self.resolutionBtn.hidden   = NO;
+    self.moreBtn.hidden         = NO;
+    self.captureBtn.hidden      = NO;
+    self.danmakuBtn.hidden      = NO;
+    
     
     [self.backBtn setImage:SuperPlayerImage(@"back_full") forState:UIControlStateNormal];
+
+    
+    if (self.hiddenDefault) {
+        self.resolutionBtn.hidden   = YES;
+        self.moreBtn.hidden         = YES;
+        self.captureBtn.hidden      = YES;
+        self.danmakuBtn.hidden      = YES;
+        
+        self.backBtn.hidden = NO;
+    }
+    
     [self.totalTimeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         if (self.resolutionArray.count > 0) {
             make.trailing.equalTo(self.resolutionBtn.mas_leading);
@@ -386,6 +373,14 @@
     self.danmakuBtn.hidden      = YES;
     self.moreContentView.hidden = YES;
     self.resolutionView.hidden  = YES;
+    if (self.hiddenDefault) {
+        self.resolutionBtn.hidden   = YES;
+        self.moreBtn.hidden         = YES;
+        self.captureBtn.hidden      = YES;
+        self.danmakuBtn.hidden      = YES;
+        
+        self.backBtn.hidden = YES;
+    }
     
     [self.totalTimeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.trailing.equalTo(self.fullScreenBtn.mas_leading);
@@ -576,9 +571,9 @@
     return _pointJumpBtn;
 }
 
-- (SuperPlayerSettingsView *)moreContentView {
+- (MoreContentView *)moreContentView {
     if (!_moreContentView) {
-        _moreContentView = [[SuperPlayerSettingsView alloc] initWithFrame:CGRectZero];
+        _moreContentView = [[MoreContentView alloc] initWithFrame:CGRectZero];
         _moreContentView.controlView = self;
         _moreContentView.hidden = YES;
         [self addSubview:_moreContentView];
@@ -632,11 +627,12 @@
     self.playeBtn.hidden             = YES;
     self.resolutionView.hidden       = YES;
     self.backgroundColor             = [UIColor clearColor];
-    self.moreBtn.enabled             = !self.disableMoreBtn;
+    self.moreBtn.enabled         = YES;
     self.lockBtn.hidden              = !self.isFullScreen;
     
     self.danmakuBtn.enabled = YES;
     self.captureBtn.enabled = YES;
+    self.moreBtn.enabled = YES;
     self.backLiveBtn.hidden              = YES;
 }
 
@@ -649,7 +645,7 @@
     }
     [self.videoSlider.pointArray removeAllObjects];
     
-    for (SPVideoFrameDescription *p in pointArray) {
+    for (SuperPlayerVideoPoint *p in pointArray) {
         PlayerPoint *point = [self.videoSlider addPoint:p.where];
         point.content = p.text;
         point.timeOffset = p.time;
@@ -691,27 +687,21 @@
     [self.videoSlider.progressView setProgress:playable animated:NO];
 }
 
-- (void)resetWithResolutionNames:(NSArray<NSString *> *)resolutionNames
-          currentResolutionIndex:(NSUInteger)currentResolutionIndex
-                          isLive:(BOOL)isLive
-                  isTimeShifting:(BOOL)isTimeShifting
-                       isPlaying:(BOOL)isPlaying
+- (void)playerBegin:(SuperPlayerModel *)model
+             isLive:(BOOL)isLive
+     isTimeShifting:(BOOL)isTimeShifting
+         isAutoPlay:(BOOL)isAutoPlay
 {
-    NSAssert(resolutionNames.count == 0 || currentResolutionIndex < resolutionNames.count,
-             @"Invalid argument when reseeting %@", NSStringFromClass(self.class));
-
-    [self setPlayState:isPlaying];
+    [self setPlayState:isAutoPlay];
     self.backLiveBtn.hidden = !isTimeShifting;
-    self.moreContentView.enableSpeedAndMirrorControl = !isLive;
+    self.moreContentView.isLive = isLive;
     
     for (UIView *subview in self.resolutionView.subviews)
         [subview removeFromSuperview];
 
-    _resolutionArray = resolutionNames;
-    if (_resolutionArray.count > 0) {
-        [self.resolutionBtn setTitle:resolutionNames[currentResolutionIndex]
-                            forState:UIControlStateNormal];
-    }
+    _resolutionArray = model.playDefinitions;
+    [self.resolutionBtn setTitle:model.playingDefinition forState:UIControlStateNormal];
+    
     UILabel *lable = [UILabel new];
     lable.text = @"清晰度";
     lable.textAlignment = NSTextAlignmentCenter;
@@ -739,7 +729,7 @@
         }];
         btn.tag = MODEL_TAG_BEGIN+i;
         
-        if (i == currentResolutionIndex) {
+        if ([_resolutionArray[i] isEqualToString:model.playingDefinition]) {
             btn.selected = YES;
             btn.backgroundColor = RGBA(34, 30, 24, 1);
             self.resoultionCurrentBtn = btn;

@@ -16,9 +16,7 @@
 
 #import "Masonry/Masonry.h"
 #import "AFNetworking/AFNetworking.h"
-//#import "SPResolutionDefination.h"
-#import "SPSubStreamInfo.h"
-#import <AVFoundation/AVFoundation.h>
+
 
 // 枚举值，包含水平移动方向和垂直移动方向
 typedef NS_ENUM(NSInteger, PanDirection){
@@ -34,9 +32,9 @@ typedef NS_ENUM(NSInteger, ButtonAction) {
     ActionContinueReplay,
 };
 
-@class TXVodPlayer, TXLivePlayer;
+
 @interface SuperPlayerView () <UIGestureRecognizerDelegate,UIAlertViewDelegate,
- SuperPlayerControlViewDelegate,  AVAssetResourceLoaderDelegate>
+TXVodPlayListener, TXLivePlayListener, SuperPlayerControlViewDelegate, TXLiveBaseDelegate, AVAssetResourceLoaderDelegate>
 
 
 /** 用来保存快进的总时长 */
@@ -79,6 +77,9 @@ typedef NS_ENUM(NSInteger, ButtonAction) {
 // add for txvodplayer
 @property BOOL  isLoaded;
 
+@property  BOOL disableDefaultOrientation; // 是否禁止默认旋转
+
+
 @property (nonatomic) BOOL  isShiftPlayback;
 
 @property CGFloat maxLiveProgressTime;    // 直播最大进度/总时间
@@ -99,10 +100,6 @@ typedef NS_ENUM(NSInteger, ButtonAction) {
 
 @property (nonatomic) CGFloat videoRatio;
 
-/// 由协议解析出分辨率定义表
-@property (strong, nonatomic) NSArray<SPSubStreamInfo *> *resolutions;
-/// 当前可用的分辨率列表
-//@property (strong, nonatomic) NSArray<NSString *> *currentResolutionNames;
 @end
 
 
