@@ -779,7 +779,7 @@ static UISlider * _volumeSlider;
     [self.netWatcher stopWatch];
     if (!self.disableDefaultOrientation) {
         self.repeatBtn.hidden = NO;
-          self.repeatBackBtn.hidden = NO;
+//          self.repeatBackBtn.hidden = NO;
     }
 
   
