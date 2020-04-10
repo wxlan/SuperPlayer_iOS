@@ -202,6 +202,7 @@ static UISlider * _volumeSlider;
 - (void)_onModelLoadSucceed:(SuperPlayerModel *)model {
     if (model == _playerModel) {
         [self _playWithModel:_playerModel];
+        [self onDeviceOrientationChange];
     }
 }
 
@@ -299,8 +300,8 @@ static UISlider * _volumeSlider;
  */
 - (void)pause {
     LOG_ME;
-    if (!self.isLoaded)
-        return;
+//    if (!self.isLoaded)
+//        return;
     [self.controlView setPlayState:NO];
     self.isPauseByUser = YES;
     self.state = StatePause;
@@ -566,6 +567,22 @@ static UISlider * _volumeSlider;
 }
 - (void)changeDefaultOrientation:(BOOL)isDefault{
     self.disableDefaultOrientation = !isDefault;
+    if (isDefault) {
+           [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+           [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDeviceOrientationChange) name:UIDeviceOrientationDidChangeNotification object:nil];
+           [[NSNotificationCenter defaultCenter] addObserver:self
+                                                          selector:@selector(onStatusBarOrientationChange)
+                                                              name:UIApplicationDidChangeStatusBarOrientationNotification
+                                                            object:nil];
+       }else{
+         
+           [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+           [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+           [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+
+           
+
+       }
    
 }
 
