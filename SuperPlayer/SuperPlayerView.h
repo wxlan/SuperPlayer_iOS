@@ -102,6 +102,7 @@ typedef NS_ENUM(NSInteger, SuperPlayerLayoutStyle) {
  * 播放model
  */
 - (void)playWithModel:(SuperPlayerModel *)playerModel;
+@property (nonatomic, assign) BOOL isNeedPause;
 
 /**
  * 重置player
