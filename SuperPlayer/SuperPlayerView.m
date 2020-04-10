@@ -743,6 +743,7 @@ static UISlider * _volumeSlider;
         [self _adjustTransform:[self _orientationForFullScreen:fullScreen]];
         [self _switchToFullScreen:fullScreen];
         [self _switchToLayoutStyle:fullScreen ? SuperPlayerLayoutStyleFullScreen : SuperPlayerLayoutStyleCompact];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"playerViewChangFullStatus" object:@(fullScreen)];
     }
     _isFullScreen = fullScreen;
     /*
@@ -1307,7 +1308,6 @@ static UISlider * _volumeSlider;
 {
     if ([self.delegate respondsToSelector:@selector(superPlayerFullScreenChanged:)]) {
         [self.delegate superPlayerFullScreenChanged:self];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"playerViewChangFullStatus" object:@(self.isFullScreen)];
 
     }
 }
