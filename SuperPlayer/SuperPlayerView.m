@@ -1443,6 +1443,11 @@ static UISlider * _volumeSlider;
     CGFloat dragedSeconds = [self sliderPosToTime:pos];
     if ([self playDuration] > 0) { // 当总时长 > 0时候才能拖动slider
         [self fastViewProgressAvaliable:dragedSeconds];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self fastViewUnavaliable];
+
+        });
+
     }
 }
 
