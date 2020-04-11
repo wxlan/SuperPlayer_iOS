@@ -500,7 +500,7 @@
         // slider滑动中事件
         [_videoSlider addTarget:self action:@selector(progressSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
         // slider结束滑动事件
-        [_videoSlider addTarget:self action:@selector(progressSliderTouchEnded:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
+        [_videoSlider addTarget:self action:@selector(progressSliderTouchEnded:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside | UIControlEventTouchDragExit | UIControlEventTouchCancel];
         _videoSlider.delegate = self;
     }
     return _videoSlider;
@@ -700,10 +700,10 @@
     if (!self.isDragging) {
         // 更新slider
         self.videoSlider.value           = progress;
-        // 更新当前播放时间
-           self.currentTimeLabel.text = [StrUtils timeFormat:currentTime];
     }
-   
+    // 更新当前播放时间
+    self.currentTimeLabel.text = [StrUtils timeFormat:currentTime];
+
     // 更新总时间
     self.totalTimeLabel.text = [StrUtils timeFormat:totalTime];
     [self.videoSlider.progressView setProgress:playable animated:NO];
