@@ -725,8 +725,8 @@ static UISlider * _volumeSlider;
         if (self.playDidEnd) {
             return;
         }
-        if (SuperPlayerWindowShared.isShowing)
-            return;
+//        if (SuperPlayerWindowShared.isShowing)
+//            return;
         
         if (self.controlView.hidden) {
             [[self.controlView fadeShow] fadeOut:5];
@@ -761,7 +761,7 @@ static UISlider * _volumeSlider;
         [self _adjustTransform:[self _orientationForFullScreen:fullScreen]];
         [self _switchToFullScreen:fullScreen];
         [self _switchToLayoutStyle:fullScreen ? SuperPlayerLayoutStyleFullScreen : SuperPlayerLayoutStyleCompact];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"playerViewChangFullStatus" object:@(fullScreen)];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"playerViewChangFullStatus" object:@(fullScreen)];
     }
     _isFullScreen = fullScreen;
     /*
@@ -788,10 +788,10 @@ static UISlider * _volumeSlider;
     self.state = StateStopped;
     self.playDidEnd = YES;
     // 播放结束隐藏
-    if (SuperPlayerWindowShared.isShowing) {
-        [SuperPlayerWindowShared hide];
-        [self resetPlayer];
-    }
+//    if (SuperPlayerWindowShared.isShowing) {
+//        [SuperPlayerWindowShared hide];
+//        [self resetPlayer];
+//    }
     [self.controlView fadeOut:0.2];
     [self fastViewUnavaliable];
     [self.netWatcher stopWatch];
@@ -878,7 +878,7 @@ static UISlider * _volumeSlider;
     if (!self.isLoaded) { return; }
     if (self.isLockScreen) { return; }
     if (self.didEnterBackground) { return; };
-    if (SuperPlayerWindowShared.isShowing) { return; }
+//    if (SuperPlayerWindowShared.isShowing) { return; }
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     if (orientation == UIDeviceOrientationFaceUp) {
         return;
@@ -886,6 +886,8 @@ static UISlider * _volumeSlider;
     SuperPlayerLayoutStyle style = [self defaultStyleForDeviceOrientation:[UIDevice currentDevice].orientation];
 
     BOOL shouldFullScreen = UIDeviceOrientationIsLandscape(orientation);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"playerViewChangFullStatus" object:@(shouldFullScreen)];
+
     [self _switchToFullScreen:shouldFullScreen];
     [self _adjustTransform:[self _orientationForFullScreen:shouldFullScreen]];
     [self _switchToLayoutStyle:style];
@@ -931,7 +933,7 @@ static UISlider * _volumeSlider;
     if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         if (!self.isLoaded) { return NO; }
         if (self.isLockScreen) { return NO; }
-        if (SuperPlayerWindowShared.isShowing) { return NO; }
+//        if (SuperPlayerWindowShared.isShowing) { return NO; }
         
         if (self.disableGesture) {
             if (!self.isFullScreen) {
@@ -1157,8 +1159,8 @@ static UISlider * _volumeSlider;
         return NO;
     }
     
-    if (SuperPlayerWindowShared.isShowing)
-        return NO;
+//    if (SuperPlayerWindowShared.isShowing)
+//        return NO;
 
     return YES;
 }
