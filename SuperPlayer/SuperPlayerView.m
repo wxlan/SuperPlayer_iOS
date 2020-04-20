@@ -22,6 +22,8 @@ static UISlider * _volumeSlider;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wdeprecated-declarations"
 
+#define isPad ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+
 
 @interface SuperPlayerView() <TXVodPlayListener, TXLivePlayListener, TXLiveBaseDelegate> {
     UIView *_fullScreenBlackView;
@@ -541,21 +543,28 @@ static UISlider * _volumeSlider;
 
         if (fullScreen) {
             [self removeFromSuperview];
+            CGFloat width = ScreenHeight;
+            CGFloat height =  ScreenWidth;
+            if (isPad) {
+                width = MAX(ScreenHeight, ScreenWidth);
+                height = MIN(ScreenHeight, ScreenWidth);
+                
+            }
             [[UIApplication sharedApplication].keyWindow addSubview:_fullScreenBlackView];
             [_fullScreenBlackView mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.width.equalTo(@(ScreenHeight));
-                make.height.equalTo(@(ScreenWidth));
+                make.width.equalTo(@(width));
+                make.height.equalTo(@(height));
                 make.center.equalTo([UIApplication sharedApplication].keyWindow);
             }];
 
             [[UIApplication sharedApplication].keyWindow addSubview:self];
             [self mas_remakeConstraints:^(MASConstraintMaker *make) {
                 if (IsIPhoneX) {
-                    make.width.equalTo(@(ScreenHeight - self.mm_safeAreaTopGap * 2));
+                    make.width.equalTo(@(width - self.mm_safeAreaTopGap * 2));
                 } else {
-                    make.width.equalTo(@(ScreenHeight));
+                    make.width.equalTo(@(width));
                 }
-                make.height.equalTo(@(ScreenWidth));
+                make.height.equalTo(@(height));
                 make.center.equalTo([UIApplication sharedApplication].keyWindow);
             }];
             [self.superview setNeedsLayout];
@@ -601,21 +610,28 @@ static UISlider * _volumeSlider;
                // 这个地方加判断是为了从全屏的一侧,直接到全屏的另一侧不用修改限制,否则会出错;
                if (_layoutStyle != SuperPlayerLayoutStyleFullScreen)  { //UIInterfaceOrientationIsPortrait(currentOrientation)) {
                    [self removeFromSuperview];
+                   CGFloat width = ScreenHeight;
+                   CGFloat height =  ScreenWidth;
+                   if (isPad) {
+                       width = MAX(ScreenHeight, ScreenWidth);
+                       height = MIN(ScreenHeight, ScreenWidth);
+                       
+                   }
                    [[UIApplication sharedApplication].keyWindow addSubview:_fullScreenBlackView];
                    [_fullScreenBlackView mas_remakeConstraints:^(MASConstraintMaker *make) {
-                       make.width.equalTo(@(ScreenHeight));
-                       make.height.equalTo(@(ScreenWidth));
+                       make.width.equalTo(@(width));
+                       make.height.equalTo(@(height));
                        make.center.equalTo([UIApplication sharedApplication].keyWindow);
                    }];
-
+                   
                    [[UIApplication sharedApplication].keyWindow addSubview:self];
                    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
                        if (IsIPhoneX) {
-                           make.width.equalTo(@(ScreenHeight - self.mm_safeAreaTopGap * 2));
+                           make.width.equalTo(@(width - self.mm_safeAreaTopGap * 2));
                        } else {
-                           make.width.equalTo(@(ScreenHeight));
+                           make.width.equalTo(@(width));
                        }
-                       make.height.equalTo(@(ScreenWidth));
+                       make.height.equalTo(@(height));
                        make.center.equalTo([UIApplication sharedApplication].keyWindow);
                    }];
                }
@@ -761,7 +777,7 @@ static UISlider * _volumeSlider;
         [self _adjustTransform:[self _orientationForFullScreen:fullScreen]];
         [self _switchToFullScreen:fullScreen];
         [self _switchToLayoutStyle:fullScreen ? SuperPlayerLayoutStyleFullScreen : SuperPlayerLayoutStyleCompact];
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"playerViewChangFullStatus" object:@(fullScreen)];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"playerViewChangFullStatus" object:@(fullScreen)];
     }
     _isFullScreen = fullScreen;
     /*
