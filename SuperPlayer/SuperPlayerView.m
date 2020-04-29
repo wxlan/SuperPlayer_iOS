@@ -1234,6 +1234,7 @@ static UISlider * _volumeSlider;
                 self.coverImageView.alpha = 0;
             }];
         }
+        [self.controlView fadeOut:5];
     } else if (state == StateFailed) {
         
     } else if (state == StateStopped) {
