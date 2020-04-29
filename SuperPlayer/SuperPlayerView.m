@@ -648,6 +648,18 @@ static UISlider * _volumeSlider;
 
     }
 
+    if (!self.disableDefaultOrientation) {
+           if (!self.repeatBtn.hidden) {
+               if (style == SuperPlayerLayoutStyleFullScreen) {
+                   self.repeatBackBtn.hidden = NO;
+                   
+               }else{
+                   self.repeatBackBtn.hidden = YES;
+                   
+               }
+               
+           }
+       }
 
     // iOS6.0之后,设置状态条的方法能使用的前提是shouldAutorotate为NO,也就是说这个视图控制器内,旋转要关掉;
     // 也就是说在实现这个方法的时候-(BOOL)shouldAutorotate返回值要为NO
@@ -811,11 +823,16 @@ static UISlider * _volumeSlider;
     [self.controlView fadeOut:0.2];
     [self fastViewUnavaliable];
     [self.netWatcher stopWatch];
-    if (!self.disableDefaultOrientation) {
+     if (!self.disableDefaultOrientation) {
         self.repeatBtn.hidden = NO;
-//          self.repeatBackBtn.hidden = NO;
-    }
+        if (self.layoutStyle == SuperPlayerLayoutStyleFullScreen) {
+            self.repeatBackBtn.hidden = NO;
 
+        }else{
+            self.repeatBackBtn.hidden = YES;
+
+        }
+    }
   
     if ([self.delegate respondsToSelector:@selector(superPlayerDidEnd:)]) {
         [self.delegate superPlayerDidEnd:self];
